@@ -1,3 +1,18 @@
+import TreeEditor from "../graph/TreeEditor";
+
+export default function Home() {
+  return (
+    <div>
+      <h1 style={{ margin: 0 }}>KnowledgeTrees</h1>
+      <p style={{ color: "#555" }}>
+        Connect handles to create prerequisite edges.
+      </p>
+      <TreeEditor />
+    </div>
+  );
+}
+
+/*
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../api/client";
 
@@ -29,3 +44,4 @@ export default function Home() {
     </div>
   );
 }
+*/
