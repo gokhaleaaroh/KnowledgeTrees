@@ -5,5 +5,5 @@ from app.db.base import Base
 class User(Base):
     __tablename__ = "users"
 
-    id = mapped_column(primary_key=True)
-    email = mapped_column(String(320), unique=True, index=True, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(320), unique=True, index=True, nullable=False)

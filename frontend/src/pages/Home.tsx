@@ -4,15 +4,15 @@ import { api } from "../api/client";
 type Health = { status: string };
 
 export default function Home() {
-    const { data, isLoading, error } = useQuery({
-	queryKey: ["health"],
-	queryFn: async () => {
-	    const res = await api.get<Health>("/api/v1/health");
-	    return res.data;
-	}
-    });
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["/health"],
+    queryFn: async () => {
+      const res = await api.get<Health>("/api/v1/health");
+      return res.data;
+    }
+  });
 
-   return (
+  return (
     <div>
       <h1 style={{ margin: 0 }}>Home</h1>
       <p style={{ color: "#555" }}>
