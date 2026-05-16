@@ -56,6 +56,7 @@ function unlockedSet(nodes: Node<ConceptNodeData>[]) {
     return s;
 }
 
+// Have all direct prereqs to Id been unlocked?
 function isReady(nodeId: Id, idx: Index, unlocked: Set<Id>) {
     const prereqs = idx.hardPrereqsOf.get(nodeId) ?? new Set<Id>();
     for (const p of prereqs) if (!unlocked.has(p)) return false;
@@ -65,6 +66,7 @@ function isReady(nodeId: Id, idx: Index, unlocked: Set<Id>) {
 function prereqClosure(targetId: Id, idx: Index): Set<Id> {
     const visited = new Set<Id>();
     const stack: Id[] = [...(idx.hardPrereqsOf.get(targetId) ?? [])];
+    visited.add(targetId);
 
     while (stack.length) {
 	const cur = stack.pop()!;
@@ -123,6 +125,10 @@ function globalImpact(candidateId: Id, idx: Index, nodes: Node<ConceptNodeData>[
     return count;
 }
 
+function impact(candidateId: Id, idx: Index, nodeIds: Set<Id>, unlocked: Set<Id>) {
+}
+
+
 export function recommendGlobalNext(
     nodes: Node<ConceptNodeData>[],
     edges: Edge<PrereqEdgeData>[],
@@ -147,4 +153,47 @@ export function recommendGlobalNext(
 	
 	return a.data.title.localCompare(b.data.title);
     });
+}
+
+export function recommendForTarget(
+    targetId: Id,
+    nodes: Node<ConceptNodeData>[],
+    edges: Edge<PrereqEdgeData>[],
+    k: number
+): Node<ConceptNodeData>[] {
+    const idx = buildIndex(nodes, edges);
+    const unlocked = unlockedSet(nodes);
+
+    const targetNode = idx.nodesById.get(targetId);
+    if (!targetNode) return [];
+    if (isUnlocked(targetNode.data.status)) return [];
+
+    const needed = prereqClosure(targetId, idx);
+
+    const missing = new Set<Id>();
+    for (const id of needed) {
+	const n = idx.nodesById.get(id);
+	if (n && !isUnlocked(n.data.status)) missing.add(id);
+    }
+
+    const dist = prereqDistanceFromTarget(targetId, idx);
+
+    const readyCandidates: Node<ConceptNodeData>[] = [];
+    for (const id of missing) {
+	if (isReady(id, idx, unlocked)) {
+	    const n = idx.nodesById.get(id);
+	    if (n) readyCandidates.push(n);
+	}
+    }
+
+    const impactWithinMissing = (candidateId: Id) => {
+	let count = 0;
+	for (const id of missing) {
+	    if (id === candidateId) continue;
+	    const prereqs = idx.hardPrereqsOf.get(id) ?? new Set<Id>();
+	    if (!prereqs.has(candidatdId)) continue;
+	    let ok = true;
+	    for (cost )
+	}
+    }
 }
